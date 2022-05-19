@@ -31,11 +31,12 @@ const refreshTasks = () => {
 };
 
 const addTask = () => {
+  const time = new Date().getTime();
   axios
     .post("https://temma.trap.show/naro-todo-server/noc7t/tasks", {
       name: newTodoName.value,
       deadline: newTodoDeadline.value,
-      id: String(new Date().getTime), //登録した時の時間をidとして設定してる
+      id: String(time), //登録した時の時間をidとして設定してる
       isComplete: false,
     })
     .then(() => {
@@ -106,6 +107,7 @@ onMounted(refreshTasks);
     <div class="task">
       <span class="name list">名前: {{ task.name }}</span>
       <span class="deadline list">期限: {{ task.deadline }}</span>
+      {{ task.id }}
       <button
         class="complete"
         @click="completeTask(task.name, task.deadline, task.id)"
