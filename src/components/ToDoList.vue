@@ -107,7 +107,6 @@ onMounted(refreshTasks);
     <div class="task">
       <span class="name list">名前: {{ task.name }}</span>
       <span class="deadline list">期限: {{ task.deadline }}</span>
-      {{ task.id }}
       <button
         class="complete"
         @click="completeTask(task.name, task.deadline, task.id)"
