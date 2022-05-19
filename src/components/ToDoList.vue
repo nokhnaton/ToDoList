@@ -1,49 +1,41 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
-//import axios from "https://unpkg.com/vue@next";
-//import dist from "https://unpkg.com/axios/dist/axios.min.js";
 
-// const cTasks = ref([
-//   { name: "寝る", deadline: "20:00" },
-//   { name: "起きる", deadline: "16:00" },
-// ]);
 const newTodoName = ref("");
 const newTodoDeadline = ref("");
 const completedTasks = ref([]);
 const uncompletedTasks = ref([]);
-//const tasks = ref([]);
-const tasks = ref([]);
+/* 
+axios.get/post/put/delete().then(() => {ここで処理をしないとうまくいかない})
+console.log()の下につく黄色い波線は無視して大丈夫そう
+*/
 const refreshTasks = () => {
+  const tasks = ref([]); //サーバーデータの一時保存用の配列
   axios
     .get("https://temma.trap.show/naro-todo-server/noc7t/tasks")
     .then((response) => {
       tasks.value = response.data;
       if (!tasks.value && !tasks.value[0]) return;
       completedTasks.value = [];
-      uncompletedTasks.value = [];
+      uncompletedTasks.value = []; //一旦配列を空にする
       for (let i = 0; i < tasks.value.length; i++) {
         if (tasks.value[i].isComplete) {
           completedTasks.value.push(tasks.value[i]);
         } else {
           uncompletedTasks.value.push(tasks.value[i]);
-        }
+        } //isCompleteの値で達成/未達成の配列に振り分ける
       }
     })
-    // eslint-disable-next-line no-console
     .catch((error) => console.log(error));
 };
 
 const addTask = () => {
-  // tasks.value.push({
-  //   name: newTodoName.value,
-  //   deadline: newTodoDeadline.value,
-  // });
   axios
     .post("https://temma.trap.show/naro-todo-server/noc7t/tasks", {
       name: newTodoName.value,
       deadline: newTodoDeadline.value,
-      id: String(new Date().getTime),
+      id: String(new Date().getTime), //登録した時の時間をidとして設定してる
       isComplete: false,
     })
     .then(() => {
@@ -55,18 +47,13 @@ const addTask = () => {
   refreshTasks();
 };
 const completeTask = (name, deadline, id) => {
-  // completedTasks.value.push({
-  //   name: name,
-  //   deadline: deadline,
-  // });
-  // tasks.value.splice(index, 1);
   axios
     .put("https://temma.trap.show/naro-todo-server/noc7t/tasks/" + id, {
       name: name,
       deadline: deadline,
       id: id,
       isComplete: true,
-    })
+    }) //isCompleteの値を更新,実はcompleteTaskとuncompleteTaskは統合できる
     .then(() => {
       refreshTasks();
     })
@@ -76,11 +63,6 @@ const completeTask = (name, deadline, id) => {
   refreshTasks();
 };
 const uncompleteTask = (name, deadline, id) => {
-  // tasks.value.push({
-  //   name: name,
-  //   deadline: deadline,
-  // });
-  // completedTasks.value.splice(index, 1);
   axios
     .put("https://temma.trap.show/naro-todo-server/noc7t/tasks/" + id, {
       name: name,
@@ -106,7 +88,6 @@ const deleteTask = (id) => {
       console.log(err);
     });
 };
-const info = ref("");
 const deleteAllTask = () => {
   axios
     .delete("https://temma.trap.show/naro-todo-server/noc7t/tasks")
@@ -134,7 +115,6 @@ onMounted(refreshTasks);
     </div>
   </div>
   <div>
-    {{ info }}
     <label>
       名前
       <input v-model="newTodoName" type="text" />
