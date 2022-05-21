@@ -6,6 +6,10 @@ const newTodoName = ref("");
 const newTodoDeadline = ref("");
 const completedTasks = ref([]);
 const uncompletedTasks = ref([]);
+const ServerURL = "http://133.130.109.224:10101/";
+// "https://temma.trap.show/naro-todo-server/"
+// "http://133.130.109.224:10101/"
+let userName = "noc7t";
 /* 
 axios.get/post/put/delete().then(() => {ここで処理をしないとうまくいかない})
 console.log()の下につく黄色い波線は無視して大丈夫そう
@@ -13,14 +17,14 @@ console.log()の下につく黄色い波線は無視して大丈夫そう
 const refreshTasks = () => {
   const tasks = ref([]); //サーバーデータの一時保存用の配列
   axios
-    .get("https://temma.trap.show/naro-todo-server/noc7t/tasks")
+    .get(ServerURL + userName + "/tasks")
     .then((response) => {
       tasks.value = response.data;
       if (!tasks.value && !tasks.value[0]) return;
       completedTasks.value = [];
       uncompletedTasks.value = []; //一旦配列を空にする
       for (let i = 0; i < tasks.value.length; i++) {
-        if (tasks.value[i].isComplete) {
+        if (tasks.value[i].isCompleted) {
           completedTasks.value.push(tasks.value[i]);
         } else {
           uncompletedTasks.value.push(tasks.value[i]);
@@ -33,11 +37,12 @@ const refreshTasks = () => {
 const addTask = () => {
   const time = new Date().getTime();
   axios
-    .post("https://temma.trap.show/naro-todo-server/noc7t/tasks", {
+    .post(ServerURL + userName + "/tasks", {
+      id: String(time), //登録した時の時間をidとして設定してる
       name: newTodoName.value,
       deadline: newTodoDeadline.value,
-      id: String(time), //登録した時の時間をidとして設定してる
-      isComplete: false,
+      isCompleted: false,
+      traQID: userName,
     })
     .then(() => {
       refreshTasks();
@@ -45,31 +50,32 @@ const addTask = () => {
     .catch((err) => {
       console.log(err);
     });
-  refreshTasks();
 };
 const completeTask = (name, deadline, id) => {
   axios
-    .put("https://temma.trap.show/naro-todo-server/noc7t/tasks/" + id, {
+    .put(ServerURL + userName + "/tasks/" + id, {
+      id: id,
       name: name,
       deadline: deadline,
-      id: id,
-      isComplete: true,
+      isCompleted: true,
+      traQID: userName,
     }) //isCompleteの値を更新,実はcompleteTaskとuncompleteTaskは統合できる
     .then(() => {
+      console.log("i");
       refreshTasks();
     })
     .catch((err) => {
       console.log(err);
     });
-  refreshTasks();
 };
 const uncompleteTask = (name, deadline, id) => {
   axios
-    .put("https://temma.trap.show/naro-todo-server/noc7t/tasks/" + id, {
+    .put(ServerURL + userName + "/tasks/" + id, {
+      id: id,
       name: name,
       deadline: deadline,
-      id: id,
-      isComplete: false,
+      isCompleted: false,
+      traQID: userName,
     })
     .then(() => {
       refreshTasks();
@@ -77,11 +83,10 @@ const uncompleteTask = (name, deadline, id) => {
     .catch((err) => {
       console.log(err);
     });
-  refreshTasks();
 };
 const deleteTask = (id) => {
   axios
-    .delete("https://temma.trap.show/naro-todo-server/noc7t/tasks/" + id)
+    .delete(ServerURL + userName + "/tasks/" + id)
     .then(() => {
       refreshTasks();
     })
@@ -91,7 +96,7 @@ const deleteTask = (id) => {
 };
 const deleteAllTask = () => {
   axios
-    .delete("https://temma.trap.show/naro-todo-server/noc7t/tasks")
+    .delete(ServerURL + userName + "/tasks")
     .then(() => {
       refreshTasks();
     })
