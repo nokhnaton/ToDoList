@@ -6,7 +6,7 @@ const newTodoName = ref("");
 const newTodoDeadline = ref("");
 const completedTasks = ref([]);
 const uncompletedTasks = ref([]);
-const ServerURL = "http://133.130.109.224:10101/";
+const ServerURL = "/api/";
 // "https://temma.trap.show/naro-todo-server/"
 // "http://133.130.109.224:10101/"
 let userName = "noc7t";
