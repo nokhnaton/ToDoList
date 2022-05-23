@@ -1,12 +1,12 @@
 <template>
   <div class="login">
-    <h1>This is an login page</h1>
+    <h1>This is an signup page</h1>
     <div>
       <input v-model="username" type="text" />
       <input v-model="password" type="password" />
     </div>
     <div>
-      <button @click="login">login</button>
+      <button @click="login">signup</button>
     </div>
   </div>
 </template>
@@ -21,14 +21,20 @@ const password = ref("");
 
 const login = async () => {
   axios
-    .post("/api/login", {
+    .post("/api/signup", {
       username: username.value,
       password: password.value,
     })
     .then((resopnse) => {
-      if (resopnse.status === 200) {
-        console.log("login");
+      if (resopnse.status === 201) {
+        console.log("signup");
         router.push("/");
+      }
+    })
+    .catch(({ response }) => {
+      console.log(response);
+      if (response.status === 409) {
+        alert("ユーザーが既に存在しています。");
       }
     });
 };

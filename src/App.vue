@@ -1,8 +1,19 @@
-<!-- <script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from "./components/HelloWorld.vue";
-</script> -->
+<script setup>
+import axios from "axios";
+//import router from "./router.js";
+import { useRouter } from "vue-router";
+const router = useRouter();
+
+const logout = async () => {
+  axios.get("/api/logout").then((resopnse) => {
+    if (resopnse.status === 200) {
+      console.log("logout");
+      router.push({ path: "/", force: true });
+      console.log("logout2");
+    }
+  });
+};
+</script>
 
 <template>
   <main>
@@ -14,7 +25,13 @@ import HelloWorld from "./components/HelloWorld.vue";
         |
         <router-link to="/axios">Axios</router-link>
         |
+        <router-link to="/countries">Countries</router-link>
+        |
         <router-link to="/login">Login</router-link>
+        |
+        <router-link to="/signup">Signup</router-link>
+        |
+        <a href="/" @click="logout">Logout</a>
       </header>
 
       <router-view />
@@ -26,6 +43,7 @@ import HelloWorld from "./components/HelloWorld.vue";
 .container {
   max-width: fit-content;
   margin: auto;
+  text-align: center;
 }
 .header {
   display: flex;

@@ -9,7 +9,7 @@ const uncompletedTasks = ref([]);
 const ServerURL = "/api/";
 // "https://temma.trap.show/naro-todo-server/"
 // "http://133.130.109.224:10101/"
-let userName = "noc7t";
+let userName = "userName";
 /* 
 axios.get/post/put/delete().then(() => {ここで処理をしないとうまくいかない})
 console.log()の下につく黄色い波線は無視して大丈夫そう
@@ -104,7 +104,17 @@ const deleteAllTask = () => {
       console.log(err);
     });
 };
-onMounted(refreshTasks);
+onMounted(() => {
+  console.log("mounted");
+  axios
+    .get("/api/whoami")
+    .then((response) => {
+      userName = response.data.username;
+      refreshTasks();
+    })
+    .catch(refreshTasks);
+  //userName = whoAmI.data.username;
+});
 </script>
 
 <template>
